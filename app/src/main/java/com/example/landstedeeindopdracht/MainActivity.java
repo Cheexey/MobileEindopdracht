@@ -1,5 +1,8 @@
 package com.example.landstedeeindopdracht;
 
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -58,9 +61,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //
         String[] mPermission = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        int check = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int check = ContextCompat.checkSelfPermission(MainActivity.this, WRITE_EXTERNAL_STORAGE);
 
-        if(check != 0){
+        if(check != 0)
+        {
             ActivityCompat.requestPermissions(MainActivity.this, mPermission, REQUEST_CODE_PERMISSION);
         }
         //Open camera button
@@ -95,12 +99,15 @@ public class MainActivity extends AppCompatActivity {
             startActivity(NewActivity);
 
             try {
-                String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+                String baseDir = getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
                 String filename = "myFile.png";
-                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), filename);
-                FileOutputStream out = new FileOutputStream(file); //HET GAAT HIER FOUT
+                File file = new File(baseDir, filename);
+                file.createNewFile();
+                Log.i("henk2","het bestand bestaat "+file.exists());
+                FileOutputStream out = new FileOutputStream(file);
                 Log.i("Success", "File is written to external storage.");
                 imageBitmap.compress(Bitmap.CompressFormat.PNG, 100,out);
+
                 out.flush();
                 out.close();
             }catch (IOException e){
